@@ -11,19 +11,31 @@ from common.forms import ProfileCreationForm
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from common.models import UserProfile
-
+# from common.models import UserProfile
+from allauth.socialaccount.models import SocialAccount
 
 def index(request):
     context = {}
     if request.user.is_authenticated:
-        try:
+        # try:
             context['username'] = request.user.username
-            context['age'] = UserProfile.objects.get(user=request.user).age
-        except UserProfile.DoesNotExist:
-            context['age'] = None
+            context['github_url'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data['html_url']
+        # except SocialAccount.DoesNotExist:
+        #     context['age'] = None
 
     return render(request, 'index.html', context)
+
+
+# def index(request):
+#     context = {}
+#     if request.user.is_authenticated:
+#         try:
+#             context['username'] = request.user.username
+#             context['age'] = UserProfile.objects.get(user=request.user).age
+#         except UserProfile.DoesNotExist:
+#             context['age'] = None
+#
+#     return render(request, 'index.html', context)
 
 
 class RegisterView(FormView):

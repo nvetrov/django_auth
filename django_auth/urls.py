@@ -21,3 +21,4 @@ urlpatterns = [
     path('', include('common.urls', namespace='common')),
     path('accounts/', include('allauth.urls')),
 ]
+
