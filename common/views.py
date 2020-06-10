@@ -14,15 +14,25 @@ from django.urls import reverse_lazy
 # from common.models import UserProfile
 from allauth.socialaccount.models import SocialAccount
 
+
 def index(request):
     context = {}
     if request.user.is_authenticated:
-        # try:
+        try:
             context['username'] = request.user.username
-            context['github_url'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data['html_url']
-        # except SocialAccount.DoesNotExist:
-        #     context['age'] = None
-
+            context['last_name'] = request.GET.get('last_name')
+            context['first_name'] = request.GET.get('first_name')
+            context['title'] = request.GET.get('city')
+            context['nickname'] = request.GET.get('nickname')
+            # context['vk_url'] = SocialAccount.objects.get(provider='vk', user=request.user).extra_data[
+            #     'html_url']
+            # context['github_url'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data[
+            #     'html_url']
+        except SocialAccount.DoesNotExist:
+            context['username'] = None
+            # context['last_name'] = None
+            # context['title'] = None
+            # context['nickname'] = None
     return render(request, 'index.html', context)
 
 
@@ -45,8 +55,6 @@ class RegisterView(FormView):
         form.save()
         username = form.cleaned_data.get('username')
         raw_password = form.cleaned_data.get('password1')
-
-        print(f'RegisterView {username} {raw_password} ')
         login(self.request, authenticate(username=username, password=raw_password))
         return super(RegisterView, self).form_valid(form)
 
