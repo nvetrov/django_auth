@@ -20,19 +20,15 @@ def index(request):
     if request.user.is_authenticated:
         try:
             context['username'] = request.user.username
-            context['last_name'] = request.GET.get('last_name')
-            context['first_name'] = request.GET.get('first_name')
-            context['title'] = request.GET.get('city')
-            context['nickname'] = request.GET.get('nickname')
-            # context['vk_url'] = SocialAccount.objects.get(provider='vk', user=request.user).extra_data[
-            #     'html_url']
-            # context['github_url'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data[
-            #     'html_url']
+            context['github_url'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data[
+                'html_url']
+            context['location'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data[
+                'location']
+            context['name'] = SocialAccount.objects.get(provider='github', user=request.user).extra_data[
+                'name']
         except SocialAccount.DoesNotExist:
-            context['username'] = None
-            # context['last_name'] = None
-            # context['title'] = None
-            # context['nickname'] = None
+            context['age'] = None
+
     return render(request, 'index.html', context)
 
 
